@@ -1,0 +1,44 @@
+{
+  "name": "online-courses-platform",
+  "version": "1.0.0",
+  "description": "online courses platform",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --recursive --exit",
+    "dev": "nodemon index",
+    "start": "node index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Foult080/online-courses-platform.git"
+  },
+  "keywords": [
+    "mern",
+    "node",
+    "online-courses",
+    "made-by-foult080"
+  ],
+  "author": "foult080",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/Foult080/online-courses-platform/issues"
+  },
+  "homepage": "https://github.com/Foult080/online-courses-platform#readme",
+  "dependencies": {
+    "@sentry/node": "^6.15.0",
+    "@sentry/tracing": "^6.15.0",
+    "bcrypt": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.13.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.13"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "mocha": "^9.1.3",
+    "nodemon": "^2.0.15"
+  }
+}
