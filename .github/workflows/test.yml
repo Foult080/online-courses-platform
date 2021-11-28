@@ -6,16 +6,16 @@ on:
   pull_request:
     branches: [main]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-  env:
+env:
     DB_HOST: ${{secrets.DB_HOST}}
     JWT_SECRET: ${{secrets.jwt_secret}}
     MAILER_USER: ${{secrets.mailer_user}}
     MAILER_PASSWORD: ${{secrets.mailer_password}}
     NODE_ENV: ${{secrets.node_env}}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
