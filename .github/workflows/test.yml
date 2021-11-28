@@ -1,0 +1,35 @@
+name: test
+
+on:
+  push:
+  merge:
+    branches:
+      - master
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    env:
+      DB_HOST = ${{secrets.db_host}}
+      JWT_SECRET = ${{secrets.jwt_secret}}
+      MAILER_USER = ${{secrets.mailer_user}}
+      MAILER_PASSWORD = ${{secrets.mailer_password}}
+      NODE_ENV = ${{secrets.node_env}}
+    strategy:
+      matrix:
+        node-version: [16.x]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      # Setup key
+      - run: set -eu
+      - run: mkdir "$HOME/.ssh"
+      - run: echo "${{ secrets.key }}" > "$HOME/.ssh/key"
+      - run: chmod 600 "$HOME/.ssh/key"
+  install-node:
+    needs: setup
+    steps:
+      - run: npm ci
+      - run: npm run test
