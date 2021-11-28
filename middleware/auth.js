@@ -5,12 +5,12 @@ const Sentry = require("@sentry/node");
 /**
  * * Check users credential in request
  */
-const auth = async (req, res, next) => {
+const checkAuth = async (req, res, next) => {
   //get token from header
   const token = req.header("authToken");
   //check token
   if (!token) {
-    return res.status(401).json({ msg: "Нет токена, авторизация отклонена " });
+    return res.status(401).json({ msg: "Нет токена, авторизация отклонена" });
   }
   //verify token
   try {
@@ -18,9 +18,27 @@ const auth = async (req, res, next) => {
     req.user = decoded.user;
     next();
   } catch (err) {
-    Sentry.captureException(error);
+    Sentry.captureException(err);
     res.status(401).json({ msg: "Токен не верен" });
   }
 };
 
-module.exports = auth;
+
+/**
+ * *Check user role
+ */
+const checkAdmin = async (req, res, next) => {
+  try {
+    //get user role
+    const role = req.user.role;
+    //check role
+    if (role == "admin") next();
+    else
+      return res.status(401).json({ msg: "У вас нет прав на создание курса" });
+  } catch (err) {
+    Sentry.captureException(err);
+    res.status(401).json({ msg: "Токен не верен" });
+  }
+};
+
+module.exports = { checkAuth, checkAdmin };

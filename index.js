@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const fileUpload = require("express-fileupload");
 const path = require("path");
 const cors = require("cors");
 const connectDB = require("./config/dataBaseConnection");
@@ -21,6 +22,13 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 app.use(cors());
 app.use(express.json({ extended: false }));
+app.use(
+  fileUpload({
+    createParentPath: true,
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  })
+);
 
 //connection to mongoDB
 connectDB();
@@ -31,6 +39,7 @@ app.use(express.static("front-hack/build"));
 //routes
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
+app.use("/api/courses", require("./routes/courses"));
 
 //sentry error handler
 app.use(Sentry.Handlers.errorHandler());

@@ -1,5 +1,7 @@
 # Dependency directories
 node_modules/
-
+client_app/public/images
+client_app/public/videos
+.vscode
 # dotenv environment variables file
 .env

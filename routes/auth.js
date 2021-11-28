@@ -2,7 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
-const auth = require("../middleware/auth");
+const { checkAuth } = require("../middleware/auth");
 const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -72,7 +72,7 @@ router.post(
 /**
  * * Send user data from database
  */
-router.get("/", auth, async (req, res) => {
+router.get("/", checkAuth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);

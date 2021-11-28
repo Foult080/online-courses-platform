@@ -17,7 +17,6 @@ describe("Auth route", () => {
         .post("/api/auth")
         .send(user)
         .end((err, res) => {
-          console.log(res.status, res.body);
           res.should.have.status(200);
           res.body.should.be.a("object");
           res.body.should.have.property("token");
@@ -50,7 +49,6 @@ describe("Auth route", () => {
         .post("/api/auth")
         .send(user)
         .end((err, res) => {
-          console.log(res.status, res.body);
           res.should.have.status(401);
           res.body.should.be.a("object");
         });

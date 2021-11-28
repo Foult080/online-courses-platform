@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/Users");
 const Sentry = require("@sentry/node");
 const nodemailer = require("nodemailer");
-const auth = require("../middleware/auth");
+const {checkAuth} = require("../middleware/auth");
 
 /**
  * * Register new user
@@ -148,7 +148,7 @@ router.put(
  * * Delete user by id
  * @params id
  */
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", checkAuth, async (req, res) => {
   const id = req.params.id;
   try {
     let user = await User.findById(id);
