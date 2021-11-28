@@ -2,22 +2,20 @@ name: test
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
-    env:
-      DB_HOST = ${{secrets.db_host}}
+
+    env: DB_HOST = ${{secrets.db_host}}
       JWT_SECRET = ${{secrets.jwt_secret}}
       MAILER_USER = ${{secrets.mailer_user}}
       MAILER_PASSWORD = ${{secrets.mailer_password}}
       NODE_ENV = ${{secrets.node_env}}
-    
+
     strategy:
       matrix:
         node-version: [16.x]
