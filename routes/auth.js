@@ -59,10 +59,11 @@ router.post(
         { expiresIn: 21600 },
         (error, token) => {
           if (error) throw error;
-          res.json({ token });
+          res.json({ authToken: token });
         }
       );
     } catch (error) {
+      console.log(err)
       Sentry.captureException(error);
       res.status(500).send("Ошибка сервера");
     }
@@ -77,7 +78,8 @@ router.get("/", checkAuth, async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
   } catch (err) {
-    Sentry.captureException(error);
+    console.log(err)
+    Sentry.captureException(err);
     res.status(500).send("Ошибка сервера");
   }
 });

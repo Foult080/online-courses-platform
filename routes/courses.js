@@ -3,6 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const Sentry = require("@sentry/node");
 const Course = require("../models/Courses");
+const Lesson = require("../models/Lessons");
 const { checkAuth, checkAdmin } = require("../middleware/auth");
 
 /**
@@ -25,7 +26,7 @@ router.post(
     }
     try {
       const { title, description } = req.body;
-      const img = req.files.img;
+      const img = req.files.img || null;
       if (!img)
         return res.status(400).json({
           errors: [
@@ -41,13 +42,14 @@ router.post(
         .status(200)
         .json({ msg: `Курс ${title}  создан`, variant: "success" });
     } catch (err) {
+      console.log(err);
       Sentry.captureException(err);
       res.status(500).json({ errors: [{ msg: "Ошибка сервера" }] });
     }
   }
 );
 
-//TODO change logic
+const video_path = "./client_app/public/videos/";
 /**
  * *Add lesson to course
  * @params title, description, url
@@ -69,25 +71,22 @@ router.post(
     //get data from req
     const { title, description } = req.body;
     const id = req.params.id;
-    const url = req.files.url;
+    const url = req.files.url || null;
     //check video
     if (!url)
       return res.status(400).json({
         errors: [{ msg: "Добавьте материал для курса", variant: "danger" }],
       });
     try {
-      //gen salt
-      let date = new Date();
-      let salt =
-        date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
-      //save video
-      url.name = salt + url.name;
-      url.mv("./client_app/public/videos/" + url.name);
-      let lesson = {
+      //create lesson obj
+      let lesson = new Lesson({
         title,
         description,
-        url: "./client_app/public/videos/" + url.name,
-      };
+      });
+      url.name = video_path + lesson.id + url.name;
+      url.mv(url.name);
+      lesson.url = url.name;
+      await lesson.save();
       //find course by id
       let course = await Course.findById(id);
       //save course
@@ -98,11 +97,32 @@ router.post(
         variant: "success",
       });
     } catch (err) {
+      console.log(err);
       Sentry.captureException(err);
       res.status(500).json({ errors: [{ msg: "Ошибка сервера" }] });
     }
   }
 );
+
+/**
+ * *Delete lesson from service
+ * @param id
+ */
+router.delete("/lessons/:id", checkAuth, checkAdmin, async (req, res) => {
+  try {
+    let id = req.params.id;
+    let lesson = await Lesson.findById(id);
+    lesson.remove();
+    return res.status(200).json({
+      msg: `Урок: ${lesson.title} был удалён`,
+      variant: "success",
+    });
+  } catch (err) {
+    console.log(err);
+    Sentry.captureException(err);
+    res.status(500).json({ errors: [{ msg: "Ошибка сервера" }] });
+  }
+});
 
 /**
  * *Update course by id
@@ -132,6 +152,21 @@ router.put("/:id", checkAuth, checkAdmin, async (req, res) => {
     });
     return res.status(200).json({ msg: "Материал курса был обновлён" });
   } catch (err) {
+    console.log(err);
+    Sentry.captureException(err);
+    res.status(500).json({ errors: [{ msg: "Ошибка сервера" }] });
+  }
+});
+
+/**
+ * *Send all courses to client
+ */
+router.get("/", async (req, res) => {
+  try {
+    const data = await Course.find().populate("lessons");
+    res.json(data);
+  } catch (err) {
+    console.log(err);
     Sentry.captureException(err);
     res.status(500).json({ errors: [{ msg: "Ошибка сервера" }] });
   }

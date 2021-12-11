@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const CoursesShcema = new mongoose.Schema({
+const LessonsShcema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -8,20 +8,14 @@ const CoursesShcema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  img: {
+  url: {
     type: String,
     required: true,
   },
-  lessons: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "lessons",
-    },
-  ],
   crdate: {
     type: Date,
     default: Date.now,
   },
 });
 
-module.exports = Courses = mongoose.model("courses", CoursesShcema);
+module.exports = Lessons = mongoose.model("lessons", LessonsShcema);
