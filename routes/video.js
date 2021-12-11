@@ -1,10 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const fs = require("fs");
 
-//TODO Fix this shit
-router.get("/:id", function (req, res) {
+/**
+ ** Send chunck of video to client and
+ * @param id string
+ */
+router.get("/:id", (req, res) => {
   let id = req.params.id;
-  const path = "./client_app/public/videos/";
+  const path = "./client_app/public/videos/" + id;
   const stat = fs.statSync(path);
   const fileSize = stat.size;
   const range = req.headers.range;

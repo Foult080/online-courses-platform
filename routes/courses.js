@@ -83,8 +83,8 @@ router.post(
         title,
         description,
       });
-      url.name = video_path + lesson.id + url.name;
-      url.mv(url.name);
+      url.name = lesson.id + url.name;
+      url.mv(video_path + url.name);
       lesson.url = url.name;
       await lesson.save();
       //find course by id

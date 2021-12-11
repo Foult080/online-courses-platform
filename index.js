@@ -40,6 +40,7 @@ app.use(express.static("front-hack/build"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/courses", require("./routes/courses"));
+app.use("/api/video", require("./routes/video"));
 
 //sentry error handler
 app.use(Sentry.Handlers.errorHandler());
