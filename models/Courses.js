@@ -18,6 +18,26 @@ const CoursesShcema = new mongoose.Schema({
       ref: "lessons",
     },
   ],
+  comments: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      avatar: {
+        type: String,
+        required: true,
+      },
+      comment: {
+        type: String,
+        required: true,
+      },
+      crdate: {
+        type: Date,
+        default: Date.now,
+      },
+    }
+  ],
   crdate: {
     type: Date,
     default: Date.now,

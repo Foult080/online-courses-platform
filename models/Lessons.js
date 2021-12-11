@@ -12,6 +12,26 @@ const LessonsShcema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  comments: [
+    {
+      name: {
+        type: String,
+        required: true,
+      },
+      avatar: {
+        type: String,
+        required: true,
+      },
+      comment: {
+        type: String,
+        required: true,
+      },
+      crdate: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   crdate: {
     type: Date,
     default: Date.now,
