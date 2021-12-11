@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/Users");
 const Sentry = require("@sentry/node");
 const nodemailer = require("nodemailer");
-const {checkAuth} = require("../middleware/auth");
+const { checkAuth } = require("../middleware/auth");
 
 /**
  * * Register new user
@@ -73,9 +73,9 @@ router.post(
         payload,
         process.env.JWT_SECRET,
         { expiresIn: 36000 },
-        (error, token) => {
+        (error, authToken) => {
           if (error) throw error;
-          return res.json({ token });
+          return res.json({ authToken });
         }
       );
     } catch (error) {
