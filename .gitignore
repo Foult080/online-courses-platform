@@ -5,3 +5,7 @@ client_app/public/videos
 .vscode/
 # dotenv environment variables file
 .env
+
+client_app/build
+client_app/package-lock.json
+client_app/yarn.lock
