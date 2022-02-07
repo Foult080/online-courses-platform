@@ -1,87 +1,27 @@
-require("dotenv").config();
-const express = require("express");
+require('dotenv').config();
+const express = require('express');
 const router = express.Router();
-const { check, validationResult } = require("express-validator");
-const { checkAuth } = require("../middleware/auth");
-const User = require("../models/Users");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const Sentry = require("@sentry/node");
+const { check } = require('express-validator');
+const { validate } = require('../middleware/validate');
+const { checkAuth } = require('../middleware/auth');
+const { authenticateUser, getMe } = require('../controllers/auth');
 
 /**
- * * Authenticate user and send token
- * @param email
- * @param password
+ * Authenticate user and send token
  */
 router.post(
-  "/",
+  '/',
   [
-    check("email", "Укажите корректный адрес электронной почты").isEmail(),
-    check("password", "Укажите верный пароль").not().isEmpty().exists(),
+    check('email', 'Укажите корректный адрес электронной почты').isEmail(),
+    check('password', 'Укажите верный пароль').not().isEmpty().exists(),
   ],
-  async (req, res) => {
-    //check errors
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    //get data from req
-    const { email, password } = req.body;
-    try {
-      //check user
-      let user = await User.findOne({ email });
-      if (!user) {
-        res
-          .status(401)
-          .json({ errors: [{ msg: "Неверные данные", variant: "danger" }] });
-      }
-
-      //check pass
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res
-          .status(401)
-          .json({ errors: [{ msg: "Неверные данные", variant: "danger" }] });
-      }
-
-      //gen token
-      const payload = {
-        user: {
-          id: user.id,
-          role: user.role,
-        },
-      };
-
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: 21600 },
-        (error, token) => {
-          if (error) throw error;
-          res.json({ authToken: token });
-        }
-      );
-    } catch (error) {
-      console.log(err)
-      Sentry.captureException(error);
-      res.status(500).send("Ошибка сервера");
-    }
-  }
+  validate,
+  authenticateUser
 );
 
 /**
- * * Send user data from database
+ * Send user data from database
  */
-router.get("/", checkAuth, async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id).select("-password");
-    res.json(user);
-  } catch (err) {
-    console.log(err)
-    Sentry.captureException(err);
-    res.status(500).send("Ошибка сервера");
-  }
-});
+router.get('/', checkAuth, getMe);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 # Dependency directories
 node_modules/
+materials/
 client_app/public/images
 client_app/public/videos
 .vscode/
