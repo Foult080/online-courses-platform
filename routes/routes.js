@@ -6,5 +6,6 @@ router.get('/health', async (req, res) => {
 });
 router.use('/api/users', require('./users'));
 router.use('/api/auth', require('./auth'));
+router.use('/api/materials', require('./materials'));
 
 module.exports = router;
