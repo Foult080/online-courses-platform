@@ -100,7 +100,7 @@ const sendRestoreEmail = async (req, res) => {
     });
     //send message to client
     res.status(200).json({ status: 'success', msg: 'Ссылка для восстановления пароля отправлена на вашу почту' });
-  } catch {
+  } catch (error) {
     Sentry.captureException(error);
     res.status(500).json({ errors: [{ msg: 'Ошибка сервера' }] });
   }

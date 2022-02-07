@@ -1,14 +1,17 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
+const Lessons = require('../models/Lessons');
 
+//TODO: maybe not best option take file name from db need tests
 /**
  * Send chunck of video to client and
  * @param id string
  */
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   let id = req.params.id;
-  const path = './materials/' + id;
+  const lesson = await Lessons.findById(id);
+  const path = './materials/' + lesson._id + '.' + lesson.format;
   const stat = fs.statSync(path);
   const fileSize = stat.size;
   const range = req.headers.range;
