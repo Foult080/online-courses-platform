@@ -6,7 +6,5 @@ router.get('/health', async (req, res) => {
 });
 router.use('/api/users', require('./users'));
 router.use('/api/auth', require('./auth'));
-router.use('/api/courses', require('./courses'));
-router.use('/api/video', require('./video'));
 
 module.exports = router;
