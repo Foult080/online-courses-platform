@@ -21,13 +21,18 @@ router.post('/api/add-lesson', checkAuth, async (req, res) => {
     //create lesson obj
     let lesson = new Lesson({ title, description });
     const format = file.name.split('.')[1];
-    file.mv('./materials/' + lesson._id + '.' + format);
     lesson.format = format;
-    await lesson.save();
-    return res.status(200).json({
-      status: 'success',
-      msg: `Урок: ${title} добавлен`,
-      data: lesson,
+    await file.mv('./materials/' + lesson._id + '.' + format, async (error) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send(error);
+      }
+      await lesson.save();
+      return res.status(200).json({
+        status: 'success',
+        msg: `Урок: ${title} добавлен`,
+        data: lesson,
+      });
     });
   } catch (err) {
     console.log(err);

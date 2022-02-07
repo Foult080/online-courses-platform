@@ -25,6 +25,8 @@ app.use(
     createParentPath: true,
     useTempFiles: true,
     tempFileDir: '/tmp/',
+    debug: true,
+    uploadTimeout: 0,
   })
 );
 
