@@ -1,19 +1,17 @@
-const express = require("express");
+const express = require('express');
+const Sentry = require('@sentry/node');
+const Tracing = require('@sentry/tracing');
+const fileUpload = require('express-fileupload');
+const path = require('path');
+const cors = require('cors');
 const app = express();
-const fileUpload = require("express-fileupload");
-const path = require("path");
-const cors = require("cors");
-const connectDB = require("./config/dataBaseConnection");
-const Sentry = require("@sentry/node");
-const Tracing = require("@sentry/tracing");
+const connectDB = require('./config/dataBaseConnection');
+const routes = require('./routes/routes');
 
 //init Sentry
 Sentry.init({
-  dsn: "https://cafa2fa67934474b8315235a6b184cbe@o1078963.ingest.sentry.io/6083493",
-  integrations: [
-    new Sentry.Integrations.Http({ tracing: true }),
-    new Tracing.Integrations.Express({ app }),
-  ],
+  dsn: 'https://cafa2fa67934474b8315235a6b184cbe@o1078963.ingest.sentry.io/6083493',
+  integrations: [new Sentry.Integrations.Http({ tracing: true }), new Tracing.Integrations.Express({ app })],
   tracesSampleRate: 1.0,
 });
 
@@ -26,7 +24,7 @@ app.use(
   fileUpload({
     createParentPath: true,
     useTempFiles: true,
-    tempFileDir: "/tmp/",
+    tempFileDir: '/tmp/',
   })
 );
 
@@ -34,20 +32,18 @@ app.use(
 connectDB();
 
 //resolve static folder for react app
-app.use(express.static("front-hack/build"));
+app.use(express.static('client_app/build'));
 
 //routes
-app.use("/api/users", require("./routes/users"));
-app.use("/api/auth", require("./routes/auth"));
-app.use("/api/courses", require("./routes/courses"));
-app.use("/api/video", require("./routes/video"));
+app.use(routes);
 
 //sentry error handler
 app.use(Sentry.Handlers.errorHandler());
 
-if (process.env.NODE_ENV === "production")
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "front-app", "build", "index.html"));
+// response on prod with html file
+if (process.env.NODE_ENV === 'production')
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client_app', 'build', 'index.html'));
   });
 
 //initial port to start
